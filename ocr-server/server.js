@@ -10,7 +10,23 @@ const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
 
-const upload = multer({dest: __dirname + '/public/img'})
+var storage = multer.diskStorage({
+    destination: __dirname + '/public/img',
+    filename: function(req, file, cb) {
+        // switch (file.mimetype) {
+        //     case 'image/jpeg':
+        //         ext = '.jpeg';
+        //         break;
+        //     case 'image/png':
+        //         ext = '.png';
+        //         break;
+        // }
+        // cb(null, file.originalname + ext)
+        cb(null, file.originalname)
+    },
+})
+
+const upload = multer({ storage: storage })
 
 app.use(bodyParser.json());
 app.use(cors());
