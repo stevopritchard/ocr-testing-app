@@ -1,0 +1,6 @@
+.scroll {
+    /* margin: 10px 0 10px 0; */
+    max-height: calc(100vh - 400px);
+    height: 200px;
+    overflow-y: scroll;
+}
