@@ -16,7 +16,6 @@ function TextDetection({ textToParent, clearText }) {
     textToParent(body.split(/\r?\n/))
   }
 
-
   return (
     <Grid container className="App" direction="column" alignItems="stretch">
       <Container id="dropzoneContainer">
