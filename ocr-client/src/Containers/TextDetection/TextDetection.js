@@ -1,8 +1,20 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Container, Card, Button } from '@material-ui/core';
 import Dropzone from '../../Components/Dropzone/Dropzone'
 
+const useStyles = makeStyles(() => ({
+  dropzoneCard: {
+    marginBottom: 40,
+  },
+  buttonArea: {
+    display: 'flex',
+    justifyContent: 'center'
+  }
+}));
+
 function TextDetection({ textToParent, clearText }) {
+  const classes = useStyles()
 
   const uploadImage = async (image) => {
     var formData = new FormData();
@@ -17,13 +29,13 @@ function TextDetection({ textToParent, clearText }) {
   }
 
   return (
-    <Grid container className="App" direction="column" alignItems="stretch">
-      <Container id="dropzoneContainer">
-        <Card variant="outlined">
+    <Grid>
+      <Container>
+        <Card variant="outlined" className={classes.dropzoneCard}>
           <Dropzone uploadImage = {uploadImage}/>
         </Card>
       </Container>
-      <Container>
+      <Container className={classes.buttonArea}>
         <Button variant="outlined" type="button" onClick={() => clearText()}>Clear text</Button>
       </Container>
     </Grid>

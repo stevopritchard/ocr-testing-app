@@ -1,13 +1,20 @@
 import React, {useCallback} from 'react';
+import { makeStyles } from '@material-ui/core/styles'
 import {useDropzone} from 'react-dropzone';
-import './Dropzone.css'
+
+const useStyles = makeStyles(() => ({
+    dropzone: {
+        padding: '10px'
+    }
+}))
 
 function Dropzone({ uploadImage }) {
+    const classes = useStyles()
     const onDrop = useCallback(acceptedFiles => { uploadImage(acceptedFiles) },[uploadImage])
     const{ getRootProps, getInputProps, isDragActive } = useDropzone({onDrop})
 
     return (
-        <div className="dropzone" {...getRootProps()}>
+        <div className={classes.dropzone} {...getRootProps()}>
             <input {...getInputProps()} />
             {
                 isDragActive ?

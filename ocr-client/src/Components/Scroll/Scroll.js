@@ -1,9 +1,19 @@
 import React from 'react';
-import './Scroll.css';
+import { makeStyles} from '@material-ui/core/styles'
+// import './Scroll.css';
+
+const useStyles = makeStyles(() => ({
+    scroll: {
+        overflowY: 'scroll',
+        maxHeight: 'calc(100vh - 150px)',
+        height: '100%',
+    }
+}))
 
 const Scroll = (props) => {
+    const classes = useStyles()
     return (
-        <div className="scroll">
+        <div className={classes.scroll}>
             {props.children}
         </div>
     )
