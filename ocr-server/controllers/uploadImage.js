@@ -5,6 +5,7 @@ const uploadGoogleVision = (req, res, client) => {
         client.textDetection(req.file.path)
         .then(results => {
             const result = results[0].textAnnotations[0].description;
+            console.log(result)
             res.send(JSON.stringify(result, null, 2));
         })
         .catch(err => console.log(err))

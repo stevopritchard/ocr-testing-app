@@ -3,13 +3,39 @@
 // in the console before running this script in order to set credentials to env variable
 
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
 const vision = require('@google-cloud/vision');
-const { createWorker } = require('tesseract.js');
 const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
+
+require('./src/db/mongoose')
+const Invoice = require('./src/models/Invoice')
+
+// const mongodb = require('mongodb');
+// const MongoClient = mongodb.MongoClient;
+
+// const connectionURL = 'mongodb://127.0.0.1:27017';
+// const databaseName = 'invoice-data';
+
+// MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
+//     if (err) {
+//         return console.log('Unable to connect')
+//     }
+//     console.log('Connected correctly!')
+//     const db = client.db(databaseName)
+//     db.collection('invoices').insertOne({
+//         item: 'pipes',
+//         quantity: 10
+//     }, (error, result) => {
+//         if(error) {
+//             return console.log('Unable to inser invoice data.')
+//         }
+//         console.log(result.ops)
+//     })
+// })
+
+const app = express();
 
 const uploadImage = require('./controllers/uploadImage');
 const { response } = require('express');
@@ -24,7 +50,11 @@ var storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 app.use(bodyParser.json());
-app.use(cors());
+var corsOptions = {
+    origin: 'http://localhost:3000',
+    optionSuccessStatus: 200
+}
+app.use(cors(corsOptions));
 app.use(express.static('public'));
 
 const port = process.env.PORT || 5000;
@@ -36,18 +66,18 @@ const client = new vision.ImageAnnotatorClient()
 
 app.post('/upload', upload.single('photo'), (req, res) => { uploadImage.uploadGoogleVision(req, res, client) });
 
-// app.post('/upload', upload.single('photo'), (req, res) => {
-//     const worker = createWorker({
-//         logger: m => console.log(m)
-//     });
-//     (async () => {
-//         await worker.load();
-//         await worker.loadLanguage('eng');
-//         await worker.initialize('eng');
-//         const { data: {text} } = await worker.recognize(req.file)
-//         console.log(text)
-//         // res.send(JSON.stringify(text))
-//         await worker.terminate();
-//     })  
-// })
+app.post('/writeToFile', (req, res) => {
+    // console.log(typeof JSON.stringify(req.body))
+    fs.writeFileSync('public/img/test.json', JSON.stringify(req.body));
+})
+
+app.post('/writeInvoice', (req, res) => {
+    const invoice = new Invoice(req.body)
+
+    invoice.save().then(() => {
+        res.send(invoice)
+    }).catch((err) => {
+        throw new Error(err)
+    })
+})
 

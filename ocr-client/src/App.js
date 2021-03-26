@@ -1,6 +1,7 @@
 import React, { useState }from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button'
 import Header from './Containers/Header/Header';
 import TextDetection from './Containers/TextDetection/TextDetection';
 import TextTable from './Components/TextTable/TextTable';
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
   const [darkState, setDarkState ] = useState(false);
   const [text, setText] = useState([]);
+  const [json, setJson] = useState({})
 
   const classes = useStyles()
 
@@ -61,6 +63,20 @@ export default function App() {
     setText("")
   }
 
+  const writeToFile = async () => {
+    console.log(json)
+    const response = await fetch('http://localhost:5000/writeInvoice', {
+      method: "post",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(json)
+    })
+    const body = await response.json()
+    console.log(body)
+    return body
+  }
+
   return (
     <ThemeProvider theme={darkTheme}>
       <div className={classes.root}>
@@ -74,8 +90,10 @@ export default function App() {
             </Grid>
             <Grid item xs={12} sm={8}>
               <Grid container >
-                <TextTable segments={text}/>
+                <TextTable segments={text} setJson={setJson}/>
               </Grid>
+
+              <Button variant="outlined" type="button" onClick={() => writeToFile()}>send to endpoint</Button>
             </Grid>
           </Grid>
         </main>
