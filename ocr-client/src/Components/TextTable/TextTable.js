@@ -6,9 +6,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField'
+
+import Button from '@material-ui/core/Button'
 
 import {Select, MenuItem } from '@material-ui/core'
 
@@ -71,10 +72,9 @@ export default function TextTable({segments, setJson}) {
         console.log(catRefs)
         updateCategories(categories.filter(category => category.value !== event.target.value)) //to be amended to filter out items that exist in catRefs
     }
-
+    
     const setCategories = () => {
-        setFinal(catRefs.current)
-        console.log(finalCategories)
+        // setFinal(catRefs.current)
         
         let filteredCategories = finalCategories.filter((cat, i) => cat !== undefined)
         console.log(filteredCategories)
@@ -83,18 +83,30 @@ export default function TextTable({segments, setJson}) {
             catKeys.push(finalCategories.indexOf(element))
         });
         console.log(catKeys)
+        // catKeys.forEach(key => {
+        //     setSegments(prevState => [...prevState, segments[key]])
+        // });
         catKeys.forEach(key => {
-            setSegments(prevState => [...prevState, segments[key]])
+            finalSegments.push(segments[key])
         })
         console.log(finalSegments)
+
         let jsonDoc = {}
         filteredCategories.forEach((category, i) => {
             var key = category
             jsonDoc[key] = finalSegments[i]
-        })
+        });
         console.log(jsonDoc)
         setJson(jsonDoc)
     }
+
+    useEffect(() => {
+        setFinal(catRefs.current)
+    },[catRefs.current])
+
+    useEffect(() => {
+        setSegments(finalSegments)
+    },[finalSegments])
 
     const classes = useStyles()
 
@@ -157,8 +169,8 @@ export default function TextTable({segments, setJson}) {
                         </StyledTableRow>
                     }
                 </TableBody>
-                <button onClick={setCategories}>set categories</button>
             </Table>
+            <Button variant="outlined" type="button" onClick={setCategories}>set categories</Button>
         </TableContainer>
     )
 }
